@@ -12,10 +12,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
+
+  private final Field2d m_field = new Field2d();
 
 
   private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
@@ -47,6 +51,7 @@ public class Drivetrain extends SubsystemBase {
 
 
   public Drivetrain() {
+    SmartDashboard.putData("Field", m_field);
     m_gyro.reset();
   }
 
@@ -72,6 +77,9 @@ public class Drivetrain extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_backLeft.setDesiredState(swerveModuleStates[2]);
     m_backRight.setDesiredState(swerveModuleStates[3]);
+
+    SmartDashboard.putNumber("Front left desired roation", swerveModuleStates[0].angle.getRadians());
+    SmartDashboard.putNumber("Front left desired speed", swerveModuleStates[0].speedMetersPerSecond);
   }
 
   /** Updates the field relative position of the robot. */
@@ -93,5 +101,8 @@ public class Drivetrain extends SubsystemBase {
     m_frontLeft.printEncoder("Front Left");
     m_backRight.printEncoder("Back Right");
     m_backLeft.printEncoder("Back Left");
+
+
+    m_field.setRobotPose(m_odometry.getPoseMeters());
   }
 }

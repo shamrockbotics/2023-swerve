@@ -74,7 +74,7 @@ public class SwerveModule {
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
-    m_turningPIDController.enableContinuousInput(0, 2*Math.PI);
+    m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   /**
@@ -103,7 +103,7 @@ public class SwerveModule {
   }
 
   public double getTurnRadians(){
-    return m_turningEncoder.getAbsolutePosition() * 2 * Math.PI;
+    return m_turningEncoder.getAbsolutePosition() * 2 * Math.PI - Math.PI;
   }
 
   public double getDriveEncoder(){
