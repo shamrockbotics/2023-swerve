@@ -1,19 +1,17 @@
 {
   "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
     "transitory": {
       "SmartDashboard": {
         "open": true
       }
     },
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Field": "Field2d"
     }
   },
   "NetworkTables Settings": {
-    "mode": "Client (NT3)",
+    "mode": "Client (NT4)",
     "serverTeam": "6956"
   }
 }
