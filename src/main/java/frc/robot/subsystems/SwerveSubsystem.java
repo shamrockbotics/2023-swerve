@@ -23,7 +23,8 @@ public class SwerveSubsystem extends SubsystemBase {
     DriveConstants.kFrontLeftTurningEncoderReversed, 
     DriveConstants.kFrontLeftAbsoluteEncoderPort, 
     DriveConstants.kFrontLeftAbsoluteEncoderOffsetRad, 
-    DriveConstants.kFrontLeftAbsoluteEncoderReversed);
+    DriveConstants.kFrontLeftAbsoluteEncoderReversed,
+    "FrontLeft");
 
   private final SwerveModule frontRight = new SwerveModule(
     DriveConstants.kFrontRightDriveCANID, 
@@ -32,7 +33,8 @@ public class SwerveSubsystem extends SubsystemBase {
     DriveConstants.kFrontRightTurningEncoderReversed, 
     DriveConstants.kFrontRightAbsoluteEncoderPort, 
     DriveConstants.kFrontRightAbsoluteEncoderOffsetRad, 
-    DriveConstants.kFrontRightAbsoluteEncoderReversed);
+    DriveConstants.kFrontRightAbsoluteEncoderReversed,
+    "FrontRight");
 
   private final SwerveModule backLeft = new SwerveModule(
     DriveConstants.kBackLeftDriveCANID, 
@@ -41,7 +43,8 @@ public class SwerveSubsystem extends SubsystemBase {
     DriveConstants.kBackLeftTurningEncoderReversed, 
     DriveConstants.kBackLeftAbsoluteEncoderPort, 
     DriveConstants.kBackLeftAbsoluteEncoderOffsetRad, 
-    DriveConstants.kBackLeftAbsoluteEncoderReversed);
+    DriveConstants.kBackLeftAbsoluteEncoderReversed,
+    "BackLeft");
     
   private final SwerveModule backRight = new SwerveModule(
     DriveConstants.kBackRightDriveCANID, 
@@ -50,7 +53,8 @@ public class SwerveSubsystem extends SubsystemBase {
     DriveConstants.kBackRightTurningEncoderReversed, 
     DriveConstants.kBackRightAbsoluteEncoderPort, 
     DriveConstants.kBackRightAbsoluteEncoderOffsetRad, 
-    DriveConstants.kBackRightAbsoluteEncoderReversed);
+    DriveConstants.kBackRightAbsoluteEncoderReversed,
+    "BackRight");
 
 
   private WPI_PigeonIMU gyro = new WPI_PigeonIMU(0);
@@ -106,6 +110,8 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Front Right Module", frontRight.getAbsoluteEncoderRad());
     SmartDashboard.putNumber("Back Left Module", backLeft.getAbsoluteEncoderRad());
     SmartDashboard.putNumber("Back Right Module", backRight.getAbsoluteEncoderRad());
+
+    SmartDashboard.putData(this);
 
 
   }
