@@ -7,11 +7,13 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class SwerveJoystickCmd extends CommandBase {
@@ -20,6 +22,7 @@ public class SwerveJoystickCmd extends CommandBase {
   private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
   private final Supplier<Boolean> fieldOrientedFunction;
   private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+  private StopStayModules stayStopModules;
 
 
   public SwerveJoystickCmd(SwerveSubsystem swerveSubsystemInit, 
@@ -34,6 +37,9 @@ public class SwerveJoystickCmd extends CommandBase {
     this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitesPerSecond);
     this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitesPerSecond);
     this.turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
+
+    stayStopModules = new StopStayModules(swerveSubsystemInit);
+
     addRequirements(swerveSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -62,20 +68,41 @@ public class SwerveJoystickCmd extends CommandBase {
 
     // 4. Construct desired chassis speeds
     ChassisSpeeds chassisSpeeds;
-    if (fieldOrientedFunction.get()){
+    //if (fieldOrientedFunction.get()){
       //Relative to field
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-        xSpeed, ySpeed, turningSpeed, swerveSubsystem.geRotation2d());
-    } else {
+        xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+    /* } else {
       //Relative to robot
       chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
-    }
+    }*/
 
-    // 5. Convert chassis speeds to individual module states
+    
+    // if joystick imputs are basically 0, stop and brake the robot
+    /*if (xSpdFunction.get() + ySpdFunction.get() + turningSpdFunction.get() < 0.001){
+      SwerveModuleState[] stopModuleStates = {
+        new SwerveModuleState(0.0, new Rotation2d(-0.75)), //front left
+        new SwerveModuleState(0.0, new Rotation2d(0.75)), // front right
+        new SwerveModuleState(0.0, new Rotation2d(0.75)), // back left 
+        new SwerveModuleState(0.0, new Rotation2d(-0.75))}; // back right
+
+        // 6. Output each module states to wheels
+        swerveSubsystem.setModuleStates(stopModuleStates);
+    } else {
+      // 5. Convert chassis speeds to individual module states
+      SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+
+      // 6. Output each module states to wheels
+      swerveSubsystem.setModuleStates(moduleStates);
+    }*/
+  
     SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
-    // 6. Output each module states to wheels
-    swerveSubsystem.setModuleStates(moduleStates);
+      // 6. Output each module states to wheels
+      swerveSubsystem.setModuleStates(moduleStates);
+    
+
+    
   }
 
   // Called once the command ends or is interrupted.

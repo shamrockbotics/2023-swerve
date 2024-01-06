@@ -6,10 +6,12 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -60,9 +62,12 @@ public class SwerveModule {
 
     turningPidController = new PIDController(Constants.ModuleConstants.kPTurning, Constants.ModuleConstants.kITurning, Constants.ModuleConstants.kDTurning);
     turningPidController.enableContinuousInput(-Math.PI, Math.PI);
+    
+    driveMotor.setIdleMode(IdleMode.kBrake);
+    turningMotor.setIdleMode(IdleMode.kBrake);
 
     resetEncoders();
-    SmartDashboard.putData(name + " PID Controller", turningPidController);
+    //SmartDashboard.putData(name + " PID Controller", turningPidController);
   }
 
 
@@ -105,6 +110,13 @@ public class SwerveModule {
     return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteEncoderRad()));
   } 
 
+  public SwerveModulePosition getPosition(){
+    //SwerveModulePosition modulePosition;
+    //double position = (driveEncoder.getPosition()*Math.PI*Constants.ModuleConstants.kWheelDiameterMeters)*0.0254;
+    return new SwerveModulePosition(driveEncoder.getPosition(), getState().angle);
+    //return modulePosition;
+  }
+
   public void setDesiredState(SwerveModuleState state){
     /*if (Math.abs(state.speedMetersPerSecond) < 0.00001){
       stop();
@@ -116,6 +128,7 @@ public class SwerveModule {
     SmartDashboard.putNumber(name + " Desired Angle", state.angle.getRadians());
     double turningMotorCalculate = turningPidController.calculate(getState().angle.getRadians(), state.angle.getRadians());
     SmartDashboard.putNumber(name + " Turning Motor Output", turningMotorCalculate);
+    turningMotor.setIdleMode(IdleMode.kCoast);
     driveMotor.set(state.speedMetersPerSecond / Constants.DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
     turningMotor.set(turningMotorCalculate);
     
@@ -124,8 +137,11 @@ public class SwerveModule {
   }
 
   public void stop(){
+    
     driveMotor.set(0);
     turningMotor.set(0);
   }
+
+  
 
 }
